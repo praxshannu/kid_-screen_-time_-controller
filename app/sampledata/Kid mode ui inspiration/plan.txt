@@ -1,0 +1,102 @@
+### Project Plan: Kid Mode Chameleon Launcher
+
+#### Phase 1: The Foundation (Core Launcher Functionality)
+
+*   **Step 1: Project Setup.**
+    *   Status: Completed
+*   **Step 2: Implement Basic Launcher.**
+    *   Description: Register the app as a default home launcher.
+    *   Status: Completed
+*   **Step 3: Create Parent Mode UI.**
+    *   Description: Display a standard app drawer.
+    *   Status: Completed
+*   **Step 4: Create Kid Mode UI.**
+    *   Description: Display a simplified grid of whitelisted apps, inspired by Olauncher.
+    *   Status: Completed
+*   **Step 5: Implement Whitelist Logic.**
+    *   Description: Allow parents to select which apps are available in Kid Mode.
+    *   Status: Completed
+
+#### Phase 2: Security and Persistence
+
+*   **Step 1: Implement Secure Storage.**
+    *   Description: Use EncryptedSharedPreferences to store sensitive state like `isKidModeActive`.
+    *   Status: Completed
+*   **Step 2: Implement Exit Gesture.**
+    *   Description: Add a triple swipe gesture to trigger a PIN dialog for exiting Kid Mode.
+    *   Status: Completed
+*   **Step 3: Ensure Boot Persistence.**
+    *   Description: Create a BOOT_COMPLETED receiver to re-launch into Kid Mode if it was active before reboot.
+    *   Status: Completed
+*   **Step 4: Handle New App Installations.**
+    *   Description: Automatically hide newly installed apps when in Kid Mode.
+    *   Status: Completed
+
+#### Phase 3: Smart Timer and Brain Breaks
+
+*   **Step 1: Build Timer Engine.**
+    *   Description: Create a service to manage the Pomodoro-style usage timer (25/15/10 min cycles).
+    *   Status: Completed
+*   **Step 2: Implement Brain Break Screen.**
+    *   Description: Create a video overlay using ExoPlayer for mandatory breaks.
+    *   Status: Completed
+*   **Step 3: Implement Content Caching.**
+    *   Description: Cache educational videos for offline playback during brain breaks.
+    *   Status: Completed
+*   **Step 4: Add Timer Warnings.**
+    *   Description: Show a notification/toast 60 seconds before a brain break starts.
+    *   Status: Completed
+
+#### Phase 4: The Intelligence (AI Guardian and Parent Dashboard)
+
+*   **Step 1: Set up Firebase.**
+    *   Description: Integrate Firebase Auth for parent login and Firestore for data sync.
+    *   Status: Completed (Mocked)
+*   **Step 2: Track App Usage.**
+    *   Description: Log usage time for different app categories.
+    *   Status: Completed
+*   **Step 3: Integrate AI for Suggestions.**
+    *   Description: Connect to a Gemini model to generate activity suggestions based on usage logs.
+    *   Status: Completed (Mocked)
+*   **Step 4: Build Parent Dashboard.**
+    *   Description: Display usage stats and AI-generated tips for the parent.
+    *   Status: Completed
+
+#### Phase 5: UI Overhaul & UX Enhancements
+
+*   **Step 1: Redesign Kid Mode UI (Olauncher-style).**
+    *   Description: Minimalist, text-based app list for a focused experience.
+    *   Status: Completed
+*   **Step 2: Redesign Parent Mode UI (Nova Launcher-style).**
+    *   Description: Polished and customizable app grid.
+    *   Status: Completed
+*   **Step 3: New Exit Mechanism.**
+    *   Description: Replace swipe gesture with a top-left button that requires PIN to exit.
+    *   Status: Completed
+*   **Step 4: Passcode Challenge for Blocked Apps.**
+    *   Description: Prompt for parent PIN when attempting to open non-whitelisted apps in Kid Mode.
+    *   Status: Completed
+
+#### Phase 6: Logic Enhancements & Onboarding Flow
+
+*   **Step 1: First-Run Onboarding (Security Initialization).**
+    *   Description: Implementation of a "Setup Wizard" that runs only on the first launch.
+    *   Status: Completed
+*   **Step 2: Active Session Enforcement (App Pinning).**
+    *   Description: Enhanced security when a child opens a whitelisted app.
+    *   Status: Completed
+*   **Step 3: Dynamic Grid Layout (Shuffled UI).**
+    *   Description: Randomize the order of apps in Kid Mode.
+    *   Status: Completed
+
+#### Phase 7: Visual UI Overhaul (Image-Based)
+
+*   **Step 1: Implement Parent Mode Home Screen.**
+    *   Description: Wallpaper-based UI with date/time, app grid, dock, and search bar (based on Image 1).
+    *   Status: Not Started
+*   **Step 2: Implement Kid Mode Entry/Transition Screen.**
+    *   Description: Dedicated screen with baby icon, Parental Controls link, and "Enter Kid Mode" button (based on Image 2).
+    *   Status: Not Started
+*   **Step 3: Secure Navigation Logic.**
+    *   Description: Connect Parent Mode -> Entry Screen -> Kid Mode Home. Implement PIN prompt for restricted app access.
+    *   Status: Not Started
