@@ -15,6 +15,19 @@ class MainActivity : FlutterActivity() {
             if (call.method == "getInstalledApps") {
                 val apps = getInstalledApps()
                 result.success(apps)
+            } else if (call.method == "launchApp") {
+                val packageName = call.argument<String>("packageName")
+                if (packageName != null) {
+                    val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+                    if (launchIntent != null) {
+                        startActivity(launchIntent)
+                        result.success(null)
+                    } else {
+                        result.error("APP_NOT_FOUND", "App not found", null)
+                    }
+                } else {
+                    result.error("INVALID_ARGUMENT", "Package name is required", null)
+                }
             } else {
                 result.notImplemented()
             }
