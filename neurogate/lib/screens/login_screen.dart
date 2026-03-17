@@ -12,15 +12,16 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
+  String? _errorDetail;
   late GoogleSignIn _googleSignIn;
 
   @override
   void initState() {
     super.initState();
     _googleSignIn = GoogleSignIn(
+      serverClientId: '86841428362-n7hnl1itoe4onhfc1envlt7eo27ibgkd.apps.googleusercontent.com',
       scopes: [
         'email',
-        'https://www.googleapis.com/auth/cloud-platform',
       ],
     );
   }
@@ -28,9 +29,13 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _handleSignIn(BuildContext context) async {
     setState(() {
       _isLoading = true;
+      _errorDetail = null;
     });
 
     try {
+      // Sign out first to clear any stale sessions
+      await _googleSignIn.signOut();
+
       final GoogleSignInAccount? account = await _googleSignIn.signIn();
       if (account != null) {
         final GoogleSignInAuthentication auth = await account.authentication;
@@ -44,18 +49,31 @@ class _LoginScreenState extends State<LoginScreen> {
         } else {
           debugPrint('Failed to get access token');
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Verification failed: Missing access token from Google')),
-            );
+            setState(() {
+              _errorDetail = 'Missing access token from Google';
+            });
           }
         }
+      } else {
+        debugPrint('Sign in cancelled by user');
       }
     } catch (error) {
       debugPrint("Sign in error: $error");
+      String message = error.toString();
+      
+      // Parse common error codes for user-friendly messages
+      if (message.contains('ApiException: 7')) {
+        message = 'Network error. Check your internet connection and ensure Google Play Services is up to date.';
+      } else if (message.contains('ApiException: 10')) {
+        message = 'Developer error: SHA-1 fingerprint mismatch. Contact the app developer.';
+      } else if (message.contains('ApiException: 12500')) {
+        message = 'Sign-in failed. Ensure your device has the latest Google Play Services.';
+      }
+      
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(content: Text('Sign in error: $error')),
-        );
+        setState(() {
+          _errorDetail = message;
+        });
       }
     } finally {
       if (mounted) {
@@ -161,6 +179,29 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                     ),
+                  if (_errorDetail != null) ...[
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.redAccent.withValues(alpha: 0.3)),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.error_outline, color: Colors.redAccent, size: 20),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              _errorDetail!,
+                              style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 24),
                   Text(
                     'By continuing, you agree to the Terms of Service. Secure connection to Gemini via OAuth.',

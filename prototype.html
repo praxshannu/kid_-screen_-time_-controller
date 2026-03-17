@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroGate AI: Cognitive Toll Launcher</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* Simulating a mobile device screen */
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background-color: #1e293b;
+            border-radius: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 0 0 10px #000;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Hide scrollbar for internal scrolling */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .slide-up {
+            animation: slideUp 0.3s ease-out forwards;
+        }
+
+        @keyframes pulse-border {
+            0% {
+                border-color: rgba(59, 130, 246, 0.5);
+            }
+
+            50% {
+                border-color: rgba(59, 130, 246, 1);
+                box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            }
+
+            100% {
+                border-color: rgba(59, 130, 246, 0.5);
+            }
+        }
+
+        .active-toll {
+            border: 2px solid transparent;
+            animation: pulse-border 2s infinite;
+        }
+
+        .spin-slow {
+            animation: spin 3s linear infinite;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="phone-mockup">
+        <!-- Status Bar Simulation -->
+        <div class="h-6 w-full flex justify-between items-center px-6 text-xs text-slate-400 pt-2 absolute top-0 z-50">
+            <span id="clock">12:00</span>
+            <div class="flex gap-2">
+                <i class="fa-solid fa-signal"></i>
+                <i class="fa-solid fa-wifi"></i>
+                <i class="fa-solid fa-battery-three-quarters"></i>
+            </div>
+        </div>
+
+        <!-- APP SCREENS -->
+        <div id="screens" class="flex-1 overflow-hidden relative pt-8">
+
+            <!-- SCREEN 1: KID DASHBOARD (The Launcher) -->
+            <div id="screen-home" class="h-full w-full p-4 overflow-y-auto no-scrollbar flex flex-col gap-6">
+                <!-- Time Bank Widget -->
+                <div class="bg-slate-800 rounded-3xl p-6 shadow-lg border border-slate-700 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500 opacity-10 rounded-full -mr-10 -mt-10">
+                    </div>
+                    <h2
+                        class="text-slate-400 text-sm font-semibold uppercase tracking-wider flex justify-between items-center">
+                        Time Bank
+                        <i class="fa-solid fa-sparkles text-blue-400 opacity-50"></i>
+                    </h2>
+                    <div class="flex items-end gap-2 mt-2">
+                        <span id="time-bank-display" class="text-5xl font-bold text-blue-400">0</span>
+                        <span class="text-slate-400 pb-1">mins</span>
+                    </div>
+                    <div class="mt-4 flex gap-2">
+                        <div class="text-xs bg-slate-700 px-3 py-1 rounded-full text-green-400"><i
+                                class="fa-solid fa-fire mr-1"></i> 3 Day Streak</div>
+                        <div class="text-xs bg-slate-700 px-3 py-1 rounded-full text-purple-400"><i
+                                class="fa-solid fa-brain mr-1"></i> +45 XP</div>
+                    </div>
+                </div>
+
+                <!-- App Grid -->
+                <div>
+                    <h3 class="text-slate-400 text-sm font-semibold mb-4 px-2">My Apps</h3>
+                    <div class="grid grid-cols-4 gap-y-6 gap-x-2" id="app-grid">
+                        <!-- Apps injected via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCREEN 2: PARENTAL SETTINGS (Scaffolded Independence) -->
+            <div id="screen-parent" class="h-full w-full p-4 overflow-y-auto no-scrollbar hidden flex-col gap-6">
+                <div class="flex items-center gap-3 mb-2">
+                    <i class="fa-solid fa-shield-halved text-2xl text-indigo-400"></i>
+                    <h2 class="text-2xl font-bold">Parent Portal</h2>
+                </div>
+
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    Adjust the cognitive tolls based on your child's developmental milestones. Tolls are now dynamically
+                    generated using <span class="text-purple-400 font-bold">✨ Gemini AI</span>.
+                </p>
+
+                <!-- Age Group Selector -->
+                <div class="bg-slate-800 rounded-2xl p-4 border border-slate-700">
+                    <label class="block text-sm font-semibold text-slate-300 mb-3">Developmental Stage (Toll
+                        Type)</label>
+                    <select id="age-selector"
+                        class="w-full bg-slate-900 border border-slate-600 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500">
+                        <option value="3-5">3–5 yrs (✨ AI Voice Object Hunt)</option>
+                        <option value="6-8">6–8 yrs (✨ AI Voice Phonics)</option>
+                        <option value="9-12" selected>9–12 yrs (✨ Dynamic AI Trivia)</option>
+                        <option value="13-16">13–16 yrs (✨ AI Intent Evaluator)</option>
+                    </select>
+                </div>
+
+                <!-- Exchange Rate -->
+                <div class="bg-slate-800 rounded-2xl p-4 border border-slate-700">
+                    <label class="block text-sm font-semibold text-slate-300 mb-1">Exchange Rate</label>
+                    <p class="text-xs text-slate-400 mb-3">Time rewarded per completed toll.</p>
+                    <div class="flex items-center gap-4">
+                        <input type="range" id="exchange-rate" min="5" max="60" step="5" value="15"
+                            class="w-full accent-indigo-500">
+                        <span id="exchange-display" class="font-bold text-indigo-400 min-w-[40px]">15m</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- BOTTOM NAVIGATION -->
+        <div
+            class="h-20 bg-slate-800/90 backdrop-blur border-t border-slate-700 flex justify-around items-center px-6 pb-4 pt-2 z-40">
+            <button onclick="switchTab('home')"
+                class="nav-btn text-blue-400 flex flex-col items-center gap-1 transition-colors" data-target="home">
+                <i class="fa-solid fa-house text-xl"></i>
+                <span class="text-[10px] font-medium">Home</span>
+            </button>
+            <button onclick="switchTab('parent')"
+                class="nav-btn text-slate-500 hover:text-indigo-400 flex flex-col items-center gap-1 transition-colors"
+                data-target="parent">
+                <i class="fa-solid fa-sliders text-xl"></i>
+                <span class="text-[10px] font-medium">Parent</span>
+            </button>
+        </div>
+
+        <!-- OVERLAYS & MODALS -->
+
+        <!-- 1. Cognitive Toll Modal (The Interceptor) -->
+        <div id="modal-toll"
+            class="absolute inset-0 bg-slate-900/95 backdrop-blur-md z-50 hidden flex-col justify-center items-center p-6 text-center slide-up">
+            <div class="w-full max-w-sm bg-slate-800 rounded-3xl p-6 border-2 border-slate-600 shadow-2xl active-toll">
+                <div
+                    class="w-16 h-16 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <h2 class="text-xl font-bold mb-2 flex justify-center items-center gap-2">
+                    Cognitive Toll <i class="fa-solid fa-sparkles text-purple-400 text-sm"></i>
+                </h2>
+                <p class="text-sm text-slate-400 mb-6" id="toll-description">Complete this task to switch your brain
+                    from passive to active mode.</p>
+
+                <!-- Dynamic Toll Content Box -->
+                <div id="toll-dynamic-content"
+                    class="bg-slate-900 rounded-2xl p-4 mb-6 min-h-[120px] flex flex-col justify-center items-center relative">
+                    <!-- Content injected via JS based on age -->
+                </div>
+
+                <!-- Feedback Box for AI Responses -->
+                <div id="toll-feedback" class="text-sm text-amber-400 mb-4 hidden font-medium"></div>
+
+                <div class="flex gap-3">
+                    <button onclick="closeToll()"
+                        class="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-xl transition-colors">
+                        Cancel
+                    </button>
+                    <button id="btn-submit-toll" onclick="submitToll()"
+                        class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition-colors shadow-lg shadow-blue-500/30 flex justify-center items-center gap-2">
+                        <span>Submit</span>
+                    </button>
+                </div>
+            </div>
+            <!-- TTS Simulation Indicator -->
+            <div id="tts-indicator" class="mt-8 text-xs text-slate-500 hidden items-center gap-2">
+                <i class="fa-solid fa-volume-high animate-pulse text-blue-400"></i> ✨ AI Voice Playing...
+            </div>
+        </div>
+
+        <!-- 2. Graceful Degradation Warning (Addiction Control) -->
+        <div id="modal-warning"
+            class="absolute top-4 left-4 right-4 bg-orange-500 text-white rounded-2xl p-4 shadow-2xl z-50 hidden transform transition-transform translate-y-[-150%]">
+            <div class="flex items-start gap-3">
+                <i class="fa-solid fa-triangle-exclamation text-2xl mt-1"></i>
+                <div>
+                    <h3 class="font-bold">Time Almost Up!</h3>
+                    <p class="text-sm opacity-90">Graceful degradation active. You have 2 minutes to finish your match.
+                    </p>
+                    <div class="w-full bg-orange-700 rounded-full h-1.5 mt-3 overflow-hidden">
+                        <div id="warning-progress" class="bg-white h-1.5 rounded-full" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Launch Simulation Toast -->
+        <div id="toast-launch"
+            class="absolute bottom-24 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-full shadow-lg z-50 hidden font-semibold text-sm w-max">
+            <i class="fa-solid fa-rocket mr-2"></i> Launching App...
+        </div>
+
+    </div>
+
+    <script>
+        /**
+         * NEUROGATE AI ARCHITECTURE
+         * Integrates Gemini API for Dynamic Generation, TTS, and Intent Analysis.
+         */
+
+        const apiKey = ""; // <--- API Key provided by execution environment
+
+        // --- GLOBAL STATE ---
+        const state = {
+            timeBank: 0,
+            ageGroup: '9-12', // Default
+            exchangeRate: 15,
+            activeTimer: null,
+            targetApp: null,
+            // AI Context variables
+            currentAiAnswer: null,
+            isAiLoading: false,
+            audioContext: null
+        };
+
+        const apps = [
+            { id: 'edu1', name: 'Khan Kids', icon: 'fa-book-open', color: 'text-green-400', bg: 'bg-green-400/10', type: 'educational' },
+            { id: 'edu2', name: 'Duolingo', icon: 'fa-language', color: 'text-emerald-400', bg: 'bg-emerald-400/10', type: 'educational' },
+            { id: 'tool1', name: 'Camera', icon: 'fa-camera', color: 'text-slate-300', bg: 'bg-slate-300/10', type: 'utility' },
+            { id: 'tool2', name: 'Notes', icon: 'fa-pen-to-square', color: 'text-yellow-400', bg: 'bg-yellow-400/10', type: 'utility' },
+            { id: 'dop1', name: 'Free Fire', icon: 'fa-gamepad', color: 'text-red-500', bg: 'bg-red-500/10', type: 'dopamine' },
+            { id: 'dop2', name: 'YouTube', icon: 'fa-youtube', color: 'text-red-600', bg: 'bg-red-600/10', type: 'dopamine' },
+            { id: 'dop3', name: 'TikTok', icon: 'fa-music', color: 'text-pink-500', bg: 'bg-pink-500/10', type: 'dopamine' },
+            { id: 'dop4', name: 'Instagram', icon: 'fa-camera-retro', color: 'text-purple-500', bg: 'bg-purple-500/10', type: 'dopamine' },
+        ];
+
+        // --- GEMINI API HELPERS ---
+
+        // Fetch wrapper with exponential backoff
+        async function fetchWithRetry(url, options, maxRetries = 5) {
+            let delay = 1000;
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        const errText = await response.text();
+                        throw new Error(`HTTP ${response.status}: ${errText}`);
+                    }
+                    return await response.json();
+                } catch (e) {
+                    if (i === maxRetries - 1) throw e;
+                    await new Promise(r => setTimeout(r, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        async function callGeminiText(prompt, jsonMode = false) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: "You are NeuroGate, a child psychology assistant. You provide short, engaging, safe content." }] },
+                model: "gemini-2.5-flash-preview-09-2025" // Explicitly define model in payload
+            };
+
+            if (jsonMode) {
+                payload.generationConfig = { responseMimeType: "application/json" };
+            }
+
+            try {
+                const result = await fetchWithRetry(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                return result.candidates?.[0]?.content?.parts?.[0]?.text || "";
+            } catch (err) {
+                console.error("Gemini Text Error:", err);
+                return jsonMode ? "{}" : "Error connecting to AI. Please try again.";
+            }
+        }
+
+        async function callGeminiTTS(text, voiceName = "Aoede") {
+            // Fix: Use the standard URL that the execution environment proxy intercepts,
+            // but override the model in the JSON payload to target the TTS model.
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: text }] }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: { prebuiltVoiceConfig: { voiceName: voiceName } }
+                    }
+                },
+                model: "gemini-2.5-flash-preview-tts" // This tells the API to use the TTS model
+            };
+
+            try {
+                const result = await fetchWithRetry(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const base64Pcm = result.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+                if (base64Pcm) {
+                    playPcmAudio(base64Pcm, 24000);
+                }
+            } catch (err) {
+                console.error("Gemini TTS Error:", err);
+            }
+        }
+
+        // Convert base64 PCM16 to playable WAV Blob and play it
+        function playPcmAudio(base64, sampleRate) {
+            const binaryString = window.atob(base64);
+            const pcmData = new Int16Array(binaryString.length / 2);
+            for (let i = 0; i < binaryString.length; i += 2) {
+                pcmData[i / 2] = binaryString.charCodeAt(i) | (binaryString.charCodeAt(i + 1) << 8);
+            }
+
+            const buffer = new ArrayBuffer(44 + pcmData.length * 2);
+            const view = new DataView(buffer);
+
+            // WAV Header
+            const writeString = (view, offset, string) => {
+                for (let i = 0; i < string.length; i++) { view.setUint8(offset + i, string.charCodeAt(i)); }
+            };
+
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + pcmData.length * 2, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, 1, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, pcmData.length * 2, true);
+
+            // Write PCM
+            let offset = 44;
+            for (let i = 0; i < pcmData.length; i++, offset += 2) {
+                view.setInt16(offset, pcmData[i], true);
+            }
+
+            const blob = new Blob([buffer], { type: 'audio/wav' });
+            const audioUrl = URL.createObjectURL(blob);
+            const audio = new Audio(audioUrl);
+
+            document.getElementById('tts-indicator').classList.replace('hidden', 'flex');
+            audio.onended = () => {
+                document.getElementById('tts-indicator').classList.replace('flex', 'hidden');
+            };
+            audio.play();
+        }
+
+        // --- UI INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderApps();
+            updateClock();
+            setInterval(updateClock, 1000);
+
+            document.getElementById('age-selector').addEventListener('change', (e) => state.ageGroup = e.target.value);
+            document.getElementById('exchange-rate').addEventListener('input', (e) => {
+                state.exchangeRate = parseInt(e.target.value);
+                document.getElementById('exchange-display').innerText = state.exchangeRate + 'm';
+            });
+        });
+
+        function renderApps() {
+            const grid = document.getElementById('app-grid');
+            grid.innerHTML = '';
+
+            apps.forEach(app => {
+                const isLocked = app.type === 'dopamine' && state.timeBank <= 0;
+                const btn = document.createElement('button');
+                btn.className = 'flex flex-col items-center gap-2 group relative';
+                btn.onclick = () => handleAppClick(app);
+
+                btn.innerHTML = `
+                    <div class="w-14 h-14 rounded-2xl ${app.bg} flex items-center justify-center shadow-sm transition-transform group-hover:scale-105 active:scale-95">
+                        <i class="fa-solid ${app.icon} text-2xl ${app.color}"></i>
+                        ${app.type === 'dopamine' ? `
+                            <div class="absolute -top-1 -right-1 w-5 h-5 bg-slate-800 rounded-full border border-slate-600 flex items-center justify-center">
+                                <i class="fa-solid ${isLocked ? 'fa-lock text-red-400' : 'fa-unlock text-green-400'} text-[10px]"></i>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <span class="text-xs text-slate-300 font-medium truncate w-full text-center px-1">${app.name}</span>
+                `;
+                grid.appendChild(btn);
+            });
+        }
+
+        function switchTab(tab) {
+            document.getElementById('screen-home').classList.toggle('hidden', tab !== 'home');
+            document.getElementById('screen-parent').classList.toggle('hidden', tab !== 'parent');
+            document.getElementById('screen-home').classList.toggle('flex', tab === 'home');
+            document.getElementById('screen-parent').classList.toggle('flex', tab === 'parent');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.dataset.target === tab) {
+                    btn.classList.replace('text-slate-500', 'text-blue-400');
+                    if (tab === 'parent') btn.classList.replace('text-blue-400', 'text-indigo-400');
+                } else {
+                    btn.classList.remove('text-blue-400', 'text-indigo-400');
+                    btn.classList.add('text-slate-500');
+                }
+            });
+        }
+
+        // --- THE INTERCEPTOR ---
+        function handleAppClick(app) {
+            if (app.type !== 'dopamine') {
+                launchApp(app.name);
+                return;
+            }
+
+            if (state.timeBank > 0) {
+                launchApp(app.name);
+                startDopamineTimer();
+            } else {
+                state.targetApp = app;
+                document.getElementById('modal-toll').classList.replace('hidden', 'flex');
+                document.getElementById('toll-feedback').classList.add('hidden');
+                generateCognitiveToll();
+            }
+        }
+
+        // --- AI COGNITIVE TOLLS GENERATION ---
+        async function generateCognitiveToll() {
+            const container = document.getElementById('toll-dynamic-content');
+            const submitBtn = document.getElementById('btn-submit-toll');
+
+            // Set Loading UI
+            container.innerHTML = `
+                <div class="flex flex-col items-center justify-center gap-2">
+                    <i class="fa-solid fa-spinner fa-spin text-2xl text-purple-400"></i>
+                    <span class="text-xs text-slate-400">✨ AI is preparing your challenge...</span>
+                </div>
+            `;
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            try {
+                if (state.ageGroup === '3-5') {
+                    // Feature 1: TTS Generation for pre-readers
+                    const objects = ['blue toy 🧸', 'red shoe 👟', 'green cup ☕', 'yellow book 📘'];
+                    const challenge = objects[Math.floor(Math.random() * objects.length)];
+                    container.innerHTML = `
+                        <div class="text-4xl mb-3">${challenge.split(' ')[2]}</div>
+                        <h3 class="text-lg font-bold text-blue-300">Find a ${challenge.split(' ').slice(0, 2).join(' ')}!</h3>
+                        <p class="text-xs text-slate-400 mt-2">Bring it to your parent.</p>
+                    `;
+                    submitBtn.innerHTML = `<span>✨ I Found It!</span>`;
+
+                    // Call Gemini TTS to speak the challenge
+                    callGeminiTTS(`Hey there! To play, go find a ${challenge.split(' ').slice(0, 2).join(' ')} and show it to your parent!`, "Kore");
+
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+                } else if (state.ageGroup === '6-8') {
+                    // TTS Phonics
+                    const letters = [{ l: 'B', w: 'Ball' }, { l: 'S', w: 'Shoe' }, { l: 'C', w: 'Cup' }];
+                    const challenge = letters[Math.floor(Math.random() * letters.length)];
+                    container.innerHTML = `
+                        <div class="text-lg font-bold text-emerald-400 mb-2">Letter Detective</div>
+                        <div class="text-3xl font-black text-white">${challenge.l} is for ${challenge.w}</div>
+                        <p class="text-xs text-slate-400 mt-2">Find one and touch the screen!</p>
+                    `;
+                    submitBtn.innerHTML = `<span>✨ Holding It!</span>`;
+
+                    // Call Gemini TTS
+                    callGeminiTTS(`Let's be detectives! Can you find something in your room that starts with the letter ${challenge.l}, like a ${challenge.w}?`, "Puck");
+
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+                } else if (state.ageGroup === '9-12') {
+                    // Feature 2: Dynamic LLM Trivia
+                    const prompt = `Generate a fun, educational trivia question for a 10 year old. The topic can be science, geography, or animals. Keep the question under 15 words. Keep the answer to a SINGLE simple word (no punctuation). Return as JSON: {"question": "...", "answer": "..."}`;
+                    const aiResponse = await callGeminiText(prompt, true);
+                    const data = JSON.parse(aiResponse);
+                    state.currentAiAnswer = data.answer.toLowerCase();
+
+                    container.innerHTML = `
+                        <div class="text-sm font-bold text-yellow-400 mb-2 flex items-center gap-1"><i class="fa-solid fa-sparkles"></i> AI Trivia Challenge</div>
+                        <div class="text-lg font-medium text-white text-center mb-3 leading-tight px-2">${data.question}</div>
+                        <input type="text" id="toll-input" class="w-full text-center bg-slate-800 border-2 border-slate-600 rounded-lg p-2 text-md font-bold text-white focus:border-blue-500 outline-none" placeholder="Type your answer...">
+                    `;
+                    submitBtn.innerHTML = `<span>Submit Answer</span>`;
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+                } else if (state.ageGroup === '13-16') {
+                    // Feature 3: Metacognitive Intent Evaluation
+                    container.innerHTML = `
+                        <div class="text-sm font-bold text-purple-400 mb-2 flex items-center gap-1"><i class="fa-solid fa-sparkles"></i> AI Intent Evaluator</div>
+                        <p class="text-sm mb-3">Before opening ${state.targetApp.name}, explain <strong>why</strong> you want to use it right now. Be honest.</p>
+                        <textarea id="toll-input" class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-sm text-white focus:border-purple-500 outline-none resize-none" rows="2" placeholder="e.g., I want to watch a tutorial on..."></textarea>
+                    `;
+                    submitBtn.innerHTML = `<i class="fa-solid fa-sparkles"></i> <span>Analyze Intent</span>`;
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            } catch (error) {
+                container.innerHTML = `<p class="text-red-400 text-sm">Failed to load challenge. Skipping toll for now.</p>`;
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // --- SUBMIT LOGIC ---
+        async function submitToll() {
+            const feedbackBox = document.getElementById('toll-feedback');
+            const submitBtn = document.getElementById('btn-submit-toll');
+
+            if (state.ageGroup === '9-12') {
+                const input = document.getElementById('toll-input').value.toLowerCase().trim();
+                if (!input || !state.currentAiAnswer.includes(input)) {
+                    document.getElementById('toll-input').classList.add('border-red-500', 'animate-pulse');
+                    feedbackBox.innerText = `Incorrect. Hint: It relates to ${state.currentAiAnswer.charAt(0).toUpperCase()}...`;
+                    feedbackBox.classList.remove('hidden');
+                    setTimeout(() => document.getElementById('toll-input').classList.remove('border-red-500', 'animate-pulse'), 500);
+                    return;
+                }
+            } else if (state.ageGroup === '13-16') {
+                const input = document.getElementById('toll-input').value.trim();
+                if (input.length < 5) {
+                    feedbackBox.innerText = "Please write a slightly longer sentence.";
+                    feedbackBox.classList.remove('hidden');
+                    return;
+                }
+
+                // AI Intent Evaluation
+                submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Analyzing...</span>`;
+                submitBtn.disabled = true;
+                feedbackBox.classList.add('hidden');
+
+                const prompt = `A teenager wants to open the app "${state.targetApp.name}". Their stated reason is: "${input}". 
+                Evaluate if this intention is mindful and purposeful, OR if it sounds like mindless dopamine seeking/boredom. 
+                If it's mindless, deny them. If it's purposeful, approve them. 
+                Return JSON: {"approved": boolean, "feedback": "Brief 1 sentence explaining why"}`;
+
+                try {
+                    const aiResponse = await callGeminiText(prompt, true);
+                    const data = JSON.parse(aiResponse);
+
+                    if (!data.approved) {
+                        feedbackBox.innerHTML = `<strong>✨ AI Says:</strong> ${data.feedback}`;
+                        feedbackBox.classList.remove('hidden', 'text-green-400');
+                        feedbackBox.classList.add('text-amber-400');
+                        submitBtn.innerHTML = `<i class="fa-solid fa-sparkles"></i> <span>Try Again</span>`;
+                        submitBtn.disabled = false;
+                        return; // Stop here, don't unlock
+                    } else {
+                        feedbackBox.innerHTML = `<strong>✨ AI Says:</strong> ${data.feedback} Access granted.`;
+                        feedbackBox.classList.remove('hidden', 'text-amber-400');
+                        feedbackBox.classList.add('text-green-400');
+                        // Wait a sec so they can read it before closing
+                        await new Promise(r => setTimeout(r, 1500));
+                    }
+                } catch (e) {
+                    feedbackBox.innerText = "Error checking intent. Permitting access anyway.";
+                    feedbackBox.classList.remove('hidden');
+                    await new Promise(r => setTimeout(r, 1000));
+                }
+            }
+
+            // Success! Reward time and launch app.
+            state.timeBank += state.exchangeRate;
+            updateTimeBankUI();
+            closeToll();
+            renderApps();
+
+            if (state.targetApp) {
+                setTimeout(() => { handleAppClick(state.targetApp); }, 300);
+            }
+        }
+
+        function closeToll() {
+            document.getElementById('modal-toll').classList.replace('flex', 'hidden');
+            document.getElementById('tts-indicator').classList.replace('flex', 'hidden');
+            state.targetApp = null;
+        }
+
+        // --- TIME MANAGEMENT ---
+        function startDopamineTimer() {
+            if (state.activeTimer) clearInterval(state.activeTimer);
+
+            // Simulating time passage rapidly for the prototype
+            state.activeTimer = setInterval(() => {
+                if (state.timeBank > 0) {
+                    state.timeBank -= 1;
+                    updateTimeBankUI();
+
+                    if (state.timeBank === 2) showGracefulWarning();
+                } else {
+                    clearInterval(state.activeTimer);
+                    hideGracefulWarning();
+                    renderApps();
+
+                    state.targetApp = null;
+                    document.getElementById('modal-toll').classList.replace('hidden', 'flex');
+                    document.getElementById('toll-feedback').classList.add('hidden');
+                    document.getElementById('toll-description').innerText = "Time expired! Complete a new AI challenge to earn more time.";
+                    generateCognitiveToll();
+                }
+            }, 2000);
+        }
+
+        function updateTimeBankUI() {
+            document.getElementById('time-bank-display').innerText = state.timeBank;
+        }
+
+        function showGracefulWarning() {
+            const warning = document.getElementById('modal-warning');
+            warning.classList.replace('hidden', 'block');
+            setTimeout(() => { warning.style.transform = 'translateY(0)'; }, 10);
+
+            const bar = document.getElementById('warning-progress');
+            bar.style.transition = 'width 4s linear';
+            setTimeout(() => { bar.style.width = '0%'; }, 50);
+        }
+
+        function hideGracefulWarning() {
+            const warning = document.getElementById('modal-warning');
+            warning.style.transform = 'translateY(-150%)';
+            setTimeout(() => {
+                warning.classList.replace('block', 'hidden');
+                document.getElementById('warning-progress').style.width = '100%';
+                document.getElementById('warning-progress').style.transition = 'none';
+            }, 300);
+        }
+
+        function launchApp(appName) {
+            const toast = document.getElementById('toast-launch');
+            toast.innerHTML = `<i class="fa-solid fa-rocket mr-2"></i> Launching ${appName}...`;
+            toast.classList.replace('hidden', 'block');
+            setTimeout(() => toast.classList.replace('block', 'hidden'), 2000);
+        }
+
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            hours = hours % 12 || 12;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            document.getElementById('clock').innerText = `${hours}:${minutes}`;
+        }
+    </script>
+</body>
+
+</html>
